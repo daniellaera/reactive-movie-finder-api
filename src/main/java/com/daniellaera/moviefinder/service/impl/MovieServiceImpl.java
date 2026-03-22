@@ -74,7 +74,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    @Transactional // todo créer aussi les acteurs par movie et ne rien faire si un acteur existe déjà, ou sinon
+    @Transactional
     public Mono<MovieResponseDTO> createMovie(MovieCreateRequestDTO request) {
         Movie movie = new Movie();
         movie.setName(request.name());
