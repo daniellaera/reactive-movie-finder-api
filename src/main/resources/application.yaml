@@ -1,0 +1,9 @@
+spring:
+  r2dbc:
+    url: r2dbc:h2:mem:///movie-db
+    username: sa
+    password:
+
+  sql:
+    init:
+      mode: always
