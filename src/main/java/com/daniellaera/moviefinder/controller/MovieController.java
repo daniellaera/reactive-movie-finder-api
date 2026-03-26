@@ -22,8 +22,11 @@ public class MovieController {
     }
 
     @GetMapping
-    public Flux<MovieResponseDTO> findAll() {
-        return movieService.findAll();
+    public Flux<MovieResponseDTO> findAll(
+            @RequestParam int size,
+            @RequestParam int offset
+    ) {
+        return movieService.findAllPaginated(size, offset);
     }
 
     @GetMapping("/{movieId}")

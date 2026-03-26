@@ -33,8 +33,8 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public Flux<MovieResponseDTO> findAll() {
-        return movieRepository.findAll()
+    public Flux<MovieResponseDTO> findAllPaginated(int size, int offset) {
+        return movieRepository.findAllPaginated(size, offset)
                 .flatMap(movie -> // eventuel N+1 problème? 1 requête pour les films, puis 1 requête par film pour les acteurs. Avec 100 films → 101 requêtes en DB.
                         // serait-il mieux une seule requête qui ramene tout?
                         actorRepository.findActorsByMovieId(movie.getId())

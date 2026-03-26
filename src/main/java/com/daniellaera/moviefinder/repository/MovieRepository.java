@@ -16,4 +16,7 @@ public interface MovieRepository extends ReactiveCrudRepository<Movie, Long> {
 
     Flux<Movie> findMoviesByPublicationDateBetween(LocalDate publicationDateBefore, LocalDate publicationDateAfter);
 
+    @Query("SELECT * FROM movies LIMIT :size OFFSET :offset")
+    Flux<Movie> findAllPaginated(int size, int offset);
+
 }

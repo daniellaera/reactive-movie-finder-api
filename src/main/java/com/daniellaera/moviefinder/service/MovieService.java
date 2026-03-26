@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 @Service
 public interface MovieService {
-    Flux<MovieResponseDTO> findAll();
+    Flux<MovieResponseDTO> findAllPaginated(int size, int offset);
 
     Mono<MovieResponseDTO> findById(Long movieId);
 

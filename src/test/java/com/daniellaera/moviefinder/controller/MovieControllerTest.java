@@ -30,38 +30,15 @@ class MovieControllerTest {
     private MovieService movieService;
 
     @Test
-    @DisplayName("GET /api/movies/withActors/id - returns a movie and its actors")
-    void findByIdWithActors() {
-        MovieResponseDTO response = buildMovieResponse(1L, "Forrest Gump", MovieGenre.ACTION,
-                LocalDate.parse("1997-12-19"),
-                List.of(new ActorResponseDTO(1L, "Tom", "Hanks")));
-
-        when(movieService.getMovieWithActors(1L)).thenReturn(Mono.just(response));
-
-        webTestClient.get()
-                .uri("/api/movies/withActors/{movieId}", 1L)
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$.id").isEqualTo(1)
-                .jsonPath("$.name").isEqualTo("Forrest Gump")
-                .jsonPath("$.genre").isEqualTo("ACTION")
-                .jsonPath("$.actors.length()").isEqualTo(1)
-                .jsonPath("$.actors[0].firstName").isEqualTo("Tom")
-                .jsonPath("$.actors[0].lastName").isEqualTo("Hanks");
-    }
-
-    @Test
     @DisplayName("GET /api/movies - returns all movies")
     void getAllMovies_returnsFluxOfMovies() {
         MovieResponseDTO m1 = buildMovieResponse(1L, "Forrest Gump", MovieGenre.ACTION, LocalDate.parse("1997-12-19"), List.of());
         MovieResponseDTO m2 = buildMovieResponse(2L, "Cast Away", MovieGenre.DRAMA, LocalDate.parse("1994-07-06"), List.of());
 
-        when(movieService.findAll()).thenReturn(Flux.just(m1, m2));
+        when(movieService.findAllPaginated(20, 0)).thenReturn(Flux.just(m1, m2));
 
         webTestClient.get()
-                .uri("/api/movies")
+                .uri("/api/movies?size=20&offset=0")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
@@ -78,9 +55,11 @@ class MovieControllerTest {
     @Test
     @DisplayName("GET /api/movies/id - returns a movie by id")
     void findById() {
-        MovieResponseDTO m1 = buildMovieResponse(1L, "Forrest Gump", MovieGenre.ACTION, LocalDate.parse("1997-12-19"), List.of());
+        MovieResponseDTO response = buildMovieResponse(1L, "Forrest Gump", MovieGenre.ACTION,
+                LocalDate.parse("1997-12-19"),
+                List.of(new ActorResponseDTO(1L, "Tom", "Hanks")));
 
-        when(movieService.findById(1L)).thenReturn(Mono.just(m1));
+        when(movieService.findById(1L)).thenReturn(Mono.just(response));
 
         webTestClient.get()
                 .uri("/api/movies/{movieId}", 1L)
@@ -90,7 +69,10 @@ class MovieControllerTest {
                 .expectBody()
                 .jsonPath("$.id").isEqualTo(1)
                 .jsonPath("$.name").isEqualTo("Forrest Gump")
-                .jsonPath("$.genre").isEqualTo("ACTION");
+                .jsonPath("$.genre").isEqualTo("ACTION")
+                .jsonPath("$.actors.length()").isEqualTo(1)
+                .jsonPath("$.actors[0].firstName").isEqualTo("Tom")
+                .jsonPath("$.actors[0].lastName").isEqualTo("Hanks");
     }
 
     @Test
